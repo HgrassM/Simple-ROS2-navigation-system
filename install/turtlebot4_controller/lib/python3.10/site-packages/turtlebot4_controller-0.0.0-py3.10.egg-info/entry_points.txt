@@ -1,0 +1,3 @@
+[console_scripts]
+turtle_walk = turtlebot4_controller.turtle_walk:main
+
