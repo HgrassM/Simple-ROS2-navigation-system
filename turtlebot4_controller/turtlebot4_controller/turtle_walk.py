@@ -86,13 +86,13 @@ class WalkNode(Node):
         else:
             min_distance = min(msg.ranges[self.front_view_range[0]:self.front_view_range[1]])
             
-            if (min_distance > 1 and self.pose != None and self.quaternion != None and self.obstacle_flag == False):
+            if (min_distance > 0.5 and self.pose != None and self.quaternion != None and self.obstacle_flag == False):
                 self.pid_walk(self.setpoint)
 
-            elif (self.obstacle_flag and min_distance > 1):
+            elif (self.obstacle_flag and min_distance > 0.5):
                 self.walk_linear_fixed()
 
-                if (min(msg.ranges) > 1):
+                if (min(msg.ranges) > 0.5):
                     self.obstacle_flag = False
 
             else:                
@@ -113,8 +113,8 @@ class WalkNode(Node):
     #This method calculates the velocity of the robot to the target using a PID controller
 
     def pid_walk(self, setpoint):
-        KP = 4
-        KI = 3
+        KP = 0.3
+        KI = 0.1
     
         x_error = math.sqrt(((setpoint[0] - self.pose.x)**2) + (setpoint[1] - self.pose.y)**2)
 
@@ -160,6 +160,10 @@ class WalkNode(Node):
         self.velocity_pub.publish(self.velocity_param)
 
     def define_target(self):
+        
+        if (self.pose != None):
+            print(f"Current coordinate is ({self.pose.x}, {self.pose.y})")
+
         print("\nType the x coordinate of the desired location:")
         x = float(input())
 
